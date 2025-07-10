@@ -1,6 +1,5 @@
-
-
+use axum::{Router, routing::get};
 #[tokio::main]
 async fn main() {
-    println!("Hello, world!");
+    println!("Hello, World!");
 }
