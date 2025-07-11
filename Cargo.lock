@@ -10,6 +10,7 @@ dependencies = [
  "chrono",
  "dotenv",
  "hyper",
+ "lazy_static",
  "serde",
  "serde_json",
  "thiserror",

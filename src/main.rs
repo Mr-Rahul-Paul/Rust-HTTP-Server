@@ -1,8 +1,11 @@
 use axum::{Router, response::Json, routing::get};
-use serde_json::json;
-use serde_json::{Result, Value};
+use serde_json::{Value, json};
 use std::net::SocketAddr;
 use tokio::net::TcpListener;
+
+mod handlers;
+mod models;
+use handlers::{create_user, get_users};
 
 async fn hello_world() -> &'static str {
     "Hello, World!"
@@ -19,7 +22,8 @@ async fn health_check() -> Json<Value> {
 async fn main() {
     let app = Router::new()
         .route("/", get(hello_world))
-        .route("/health", get(health_check));
+        .route("/health", get(health_check))
+        .route("/api/users", get(get_users).post(create_user));
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     println!("{}", addr);
