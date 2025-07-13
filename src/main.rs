@@ -23,6 +23,7 @@ struct User {
     id: Option<mongodb::bson::oid::ObjectId>,
     name: String,
     email: String,
+    password: String, // Now included
 }
 //db handler , sets connection , return arr of jsons or http err
 async fn get_users(State(state): State<AppState>) -> Result<Json<Vec<User>>, StatusCode> {
@@ -65,12 +66,14 @@ async fn health_check() -> Json<Value> {
 
 #[tokio::main]
 async fn main() {
-    
+    dotenv::dotenv().ok(); // Loads environment variables from .env file
+    let mongodb_uri = std::env::var("mongodb_uri").expect("MONGODB_URI must be set in .env file");
+    // db only connectes if ip is authorized
     let client = Client::with_uri_str(mongodb_uri)
         .await
         .expect("Failed to connect to MongoDB");
 
-    let db = client.database("your_database_name");
+    let db = client.database("sample_mflix");
 
     let state = AppState { db };
 
