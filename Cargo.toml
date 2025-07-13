@@ -13,5 +13,7 @@ tracing = "0.1"  # Logging
 tracing-subscriber = "0.3"  # Logging subscriber
 dotenv = "0.15"  # Environment variables
 thiserror = "1.0"  # Custom errors
-chrono = "0.4.41"
+chrono = { version = "0.4.41", features = ["serde"] }
 lazy_static = "1.4"
+mongodb = "2.8"  # MongoDB driver
+uuid = { version = "1.7", features = ["v4", "serde"] }  # For generating unique IDs
