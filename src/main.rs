@@ -7,7 +7,7 @@ use mongodb::Client;
 use std::net::SocketAddr;
 use tokio::net::TcpListener;
 
-use crate::handlers::{get_users, health_check, post_users};
+use crate::handlers::{get_users, health_check, post_users, download_file};
 use crate::state::AppState;
 
 #[tokio::main]
@@ -24,8 +24,9 @@ async fn main() {
     let state = AppState { db };
 
     let app = Router::new()
-        .route("/health", get(health_check))
+        .route("/", get(health_check))
         .route("/api/users", get(get_users).post(post_users))
+        .route("/download", get(download_file))
         .with_state(state);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));

@@ -1,7 +1,13 @@
 use crate::{models::User, state::AppState};
-use axum::{extract::State, http::StatusCode, response::Json};
+use axum::{
+    extract::State,
+    http::{StatusCode, header},
+    response::{IntoResponse, Json, Response},
+};
 use mongodb::Collection;
 use serde_json::{Value, json};
+use tokio::fs;
+use tokio::io::AsyncReadExt;
 
 //db handler , sets connection , return arr of jsons or http err
 pub async fn get_users(State(state): State<AppState>) -> Result<Json<Vec<User>>, StatusCode> {
@@ -19,7 +25,35 @@ pub async fn get_users(State(state): State<AppState>) -> Result<Json<Vec<User>>,
         Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
     }
 }
+pub async fn download_file() -> Response {
+    let file_path = r"C:\Users\rpaul\OneDrive\Desktop\Requirements\PROFILE2.png";
 
+    let mut file = match fs::File::open(file_path).await {
+        Ok(f) => f,
+        Err(e) => {
+            return (StatusCode::NOT_FOUND, format!("file not found {}", e)).into_response();
+        }
+    };
+    let mut buffer = Vec::new();
+
+    if let Err(_) = file.read_to_end(&mut buffer).await {
+        return (StatusCode::INTERNAL_SERVER_ERROR, "read error").into_response();
+    }
+
+    let mut response = Response::new(buffer.into());
+
+    let headers = response.headers_mut();
+    headers.insert(
+        header::CONTENT_TYPE,
+        "image/png".parse().unwrap(),
+    );
+    headers.insert(
+        header::CONTENT_DISPOSITION,
+        "attachment; filename=\"PROFILE2.png\"".parse().unwrap(),
+    );
+
+    response
+}
 // inserting a single user
 pub async fn post_users(
     State(state): State<AppState>, // access application state for db
