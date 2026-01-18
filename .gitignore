@@ -3,5 +3,7 @@
 .env.local
 .env.*.local
 *.log
+ARCHITECTURE.md
+plan.md
 .DS_Store
 Cargo.lock
