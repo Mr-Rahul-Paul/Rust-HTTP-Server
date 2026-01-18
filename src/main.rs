@@ -7,8 +7,14 @@ use mongodb::Client;
 use std::net::SocketAddr;
 use tokio::net::TcpListener;
 
-use crate::handlers::{get_users, health_check, post_users, download_file};
+use crate::handlers::{download_file, get_users, health_check, post_users, metrics_handler};
 use crate::state::AppState;
+
+use prometheus_client::registry::Registry;
+use prometheus_client::metrics::family::Family;
+use prometheus_client::metrics::counter::Counter;
+use std::sync::Arc;
+use crate::state::MetricLabels;
 
 #[tokio::main]
 async fn main() {
@@ -21,12 +27,25 @@ async fn main() {
 
     let db = client.database("sample_mflix");
 
-    let state = AppState { db };
+    // registry (for storing) 
+    let mut registry = Registry::default();
+
+    // Metric Family
+    let request_counter = Family::<MetricLabels, Counter>::default();
+
+    registry.register(
+        "http_requests",
+        "Number of HTTP requests",
+        request_counter.clone(),
+    );
+    
+    let state = AppState { db , registry: Arc::new(registry) , request_counter };
 
     let app = Router::new()
         .route("/", get(health_check))
         .route("/api/users", get(get_users).post(post_users))
         .route("/download", get(download_file))
+        .route("/metrics", get(metrics_handler))
         .with_state(state);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
