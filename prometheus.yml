@@ -1,0 +1,7 @@
+global:
+  scrape_interval: 15s # How often to scrape metrics
+
+scrape_configs:
+  - job_name: 'rust-http-server'
+    static_configs:
+      - targets: ['app:3000']
