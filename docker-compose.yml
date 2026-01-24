@@ -1,0 +1,27 @@
+version: "3.8" 
+
+services:
+  app:
+  #docker file location
+    build: .
+  # port mappping
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+#name the container
+    container_name: rust_http_server
+
+  prom:
+    image: prom/prometheus:v2.40.1
+    
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+    ports:
+      - "9090:9090"
+
+    container_name: prometheus
