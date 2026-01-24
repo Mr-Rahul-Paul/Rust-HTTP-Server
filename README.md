@@ -4,12 +4,6 @@ High-performance, async HTTP server using **Axum**, **Tokio**, and **MongoDB**. 
 
 The entire server containerised , packed with observabilty and metrics. can be run with a single command. 
 
-## capabilities : 
-    - get and parse json  
-    - post and parse json  
-    - serve images  
-    - metrics collection 
-    
 ## Setup
 
 ```bash
@@ -19,6 +13,12 @@ docker compose up --build
 # Prometheus: http://localhost:9090
 ```
 
+## capabilities : 
+    - get and parse json  
+    - post and parse json  
+    - serve images  
+    - metrics collection 
+    
 ## Endpoints
 
 - `GET  /` - Health Check
