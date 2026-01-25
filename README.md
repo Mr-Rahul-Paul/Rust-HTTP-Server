@@ -34,3 +34,10 @@ docker compose up --build
 - **Web**: Axum
 - **DB**: MongoDB
 - **Observability**: Prometheus
+
+---
+
+> [!NOTE]
+> **Security**: The `/metrics` endpoint (port 9090) exposes internal server metrics. When deploying to production, configure your cloud provider's firewall/security groups to restrict port 9090 to private/internal traffic only, allowing access solely from your Prometheus server.
+
+or we can add a reverse proxy , that ony accepts our computers ip. gi
