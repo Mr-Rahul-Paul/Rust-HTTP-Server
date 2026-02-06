@@ -12,7 +12,8 @@ RUN cargo build --release
 
 COPY src ./src 
 
-RUN cargo build --release
+# Touch source files so cargo detects them as newer than the cached dummy binary
+RUN touch src/*.rs && cargo build --release
 
 #use same version as rust one 
 FROM debian:bookworm-slim AS runtime
